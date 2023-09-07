@@ -401,4 +401,34 @@ public:
     }
 };
 ```
+## 12. Cut and maximize segments
 
+```cpp
+{
+    public:
+    //Function to find the maximum number of cuts
+    int func(int n, int x, int y, int z, vector<int> &memo){
+        if(n<0)
+            return INT_MIN;
+        if(n==0)
+            return 0;
+        if(memo[n]!=-1){
+            return memo[n];
+        }
+        
+        int n1=1+func(n-x,x,y,z,memo);
+        int n2=1+func(n-y,x,y,z,memo);
+        int n3=1+func(n-z,x,y,z,memo);
+        
+        memo[n]=max(n1,max(n2,n3));
+        return memo[n];
+    }
+    
+    int maximizeTheCuts(int n, int x, int y, int z)
+    {
+        vector<int> memo(n+1,-1);
+        memo[0]=0;
+        return max(func(n,x,y,z,memo),0);
+    }
+};
+```
