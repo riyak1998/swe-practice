@@ -369,3 +369,36 @@ public:
 };
 ```
 
+## 10. 2-D matrix breaker
+
+```cpp
+```
+
+## 11. Keyboard: Generate max A's with select, copy, and paste
+
+```cpp
+class Solution{
+public:
+    long long int optimalKeys(int N){
+        // code here
+        
+        if(N<=6)
+            return (long long)N;
+        vector<long long> ans(N+1,0);
+        for(int i=0;i<=6;i++)
+            ans[i]=i;
+            
+        for(int i=7;i<=N;i++){
+            // long long maxx=INT_MIN;
+            for(int b=i-3;b>=1;b--){
+                long long curr=(i-b-1)*ans[b];
+                ans[i]=max(curr,ans[i]);
+            }
+            // ans[i]=maxx;
+        }
+        return ans[N];
+        
+    }
+};
+```
+
