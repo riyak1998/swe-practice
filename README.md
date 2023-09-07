@@ -307,3 +307,65 @@ class Solution
     }
 };
 ```
+## 8. LCS gives the lcs string as well
+
+```cpp
+class Solution
+{
+    public:
+    int lcs(int n, int m, string s1, string s2)
+    {
+        // your code here
+        string lcss;
+        vector<vector<string>> dp(n+1,vector<string> (m+1,""));
+        vector<vector<int>> dp1(n+1,vector<int> (m+1,0));
+        dp[0][0]="";
+        dp1[0][0]=0;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+                if(s1[i-1]==s2[j-1]){
+                    dp[i][j]=dp[i-1][j-1]+s1[i-1];
+                    dp1[i][j]=dp1[i-1][j-1]+1;
+                }
+                else {
+                    dp1[i][j]=max(dp1[i-1][j],dp1[i][j-1]);
+                    int l1=dp[i-1][j].length();
+                    int l2=dp[i][j-1].length();
+                    dp[i][j]=l1>=l2?dp[i-1][j]:dp[i][j-1];
+                }
+            }
+        }
+        cout<<dp[n][m]<<endl;
+        return dp1[n][m];
+    }
+};
+```
+
+## 9. Spiral matrix
+
+```cpp
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int rowCol[4][2]={{0,1},{1,0},{0,-1},{-1,0}};
+        int direction=0;
+        int currR=0,currC=0;
+        vector<int> ans;
+        while(ans.size()<n*m){
+            ans.push_back(matrix[currR][currC]);
+            int nextR=currR+rowCol[direction][0];
+            int nextC=currC+rowCol[direction][1];
+            matrix[currR][currC]=INT_MAX;
+            if(nextR<0 || nextR>=n || nextC<0 || nextC>=m || matrix[nextR][nextC] == INT_MAX){
+                direction=(direction+1)%4;
+            }
+            currR=currR+rowCol[direction][0];
+            currC=currC+rowCol[direction][1];
+        }
+        return ans;
+    }
+};
+```
+
