@@ -32,7 +32,7 @@ int main() {
 }
 ```
 
-### 2. Left rotation game
+## 2. Left rotation game
 
 ```cpp
 #include <bits/stdc++.h>
@@ -66,3 +66,118 @@ int main() {
     return 0;
 }
 ```
+
+## 3. Largest number after concatenation 
+
+```cpp
+
+//for int
+bool myCompare(int x,int y){
+    int t1=x,t2=y;
+    
+    int countx=0,county=0;
+    while(x>0){
+        countx++;
+        x/=10;
+    }
+    while(y>0){
+        county++;
+        y/=10;
+    }
+    
+    int xy=t1,yx=t2;
+    //generate xy
+    while(county--){
+        xy*=10;
+    }
+    xy+=t2;
+    
+    //generate yx
+    while(countx--){
+        yx*=10;
+    }
+    yx+=t1;
+    
+    return xy>yx;
+}
+
+///for strings
+static bool myCompare(int &a,int &b){
+    string x = to_string(a)+to_string(b);
+    string y = to_string(b)+to_string(a);
+    
+    return x>y;
+}
+
+string Solution::largestNumber(const vector<int> &A) {
+    if(A.size()==0)
+        return "0";
+        
+    int cnt=0;
+
+    for(int i=0;i<A.size();i++){
+        if(A[i]==0){
+            cnt++;
+        }
+    }
+
+    if(cnt==A.size()){
+        return "0";
+    }
+    
+    vector<int> arr=A;
+    sort(arr.begin(),arr.end(),myCompare);
+        
+    string ans;
+    for(int x:arr){
+        ans+=to_string(x);
+    }
+    return ans;
+}
+```
+
+## 4. Left shifts, then right shifts
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void reverse(string &s, int i, int j){
+    while(i<j){
+        swap(s[i],s[j]);
+        i++,j--;
+    }
+}
+
+void rotations(string &s, int &leftShift, int &rightShift){
+    int l=s.length();
+    leftShift=leftShift %l;
+    
+    reverse(s,0,leftShift-1);
+    reverse(s,leftShift,l-1);
+    reverse(s,0,l-1);
+    
+    //convert rightshift in terms of left shift to use the same algo for rotations
+    rightShift=(rightShift%l);
+    rightShift=(l-rightShift)%l;
+    
+    reverse(s,0,rightShift-1);
+    reverse(s,rightShift,l-1);
+    reverse(s,0,l-1);
+    
+}
+
+int main() {
+    string s="abcd";
+    int leftShift=1;
+    int rightShift=2;
+    rotations(s, leftShift, rightShift);
+    cout<<s;
+    return 0;
+}
+```
+
+## 5. Repeating string finder
+
+
