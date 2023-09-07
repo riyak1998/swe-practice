@@ -178,6 +178,132 @@ int main() {
 }
 ```
 
+```cpp
+#include <stdio.h>
+#include <string.h>
+
+void shift_string(char *str, int left_shifts, int right_shifts) {
+    int k = right_shifts - left_shifts;
+    int len = strlen(str);
+    char temp[len];
+
+    if (k > 0) {
+        // Perform right shift
+        for (int i = 0; i < len; i++) {
+            temp[(i + k) % len] = str[i];
+        }
+    } else {
+        // Perform left shift
+        for (int i = 0; i < len; i++) {
+            temp[(i + len + k) % len] = str[i];
+        }
+    }
+
+    // Copy the shifted string back to the original string
+    for (int i = 0; i < len; i++) {
+        str[i] = temp[i];
+    }
+}
+
+int main() {
+    char str[] = "abcd";
+    int left_shifts = 1;
+    int right_shifts = 2;
+
+    printf("Original string: %s\n", str);
+    shift_string(str, left_shifts, right_shifts);
+    printf("Shifted string: %s\n", str);
+
+    return 0;
+}
+```
+
 ## 5. Repeating string finder
 
+## 6. Search pattern occurences
 
+```cpp
+vector<int> search(string B, string A)
+        {
+            //code hee.
+            int lenA=A.length(),lenB=B.length();
+            int index=-1;
+            vector<int> ans;
+            for(int i=0;i<lenA;){
+                int j=0;
+                if(A[i]==B[j]){
+                    int temp=i;
+                    while(j<lenB && A[i]==B[j]){
+                        i++;
+                        j++;
+                    }
+                    if(j==lenB){
+                        index=temp;
+                        ans.push_back(index+1);
+                    }
+                    i=temp+1;
+                }
+                else{
+                    i++;
+                }
+            }
+            if(ans.size()==0)
+                return {-1};
+            return ans;
+        }
+```
+#### KMP-algo
+
+```cpp
+```
+
+## 7. LCS (memoization, tabulation)
+
+```cpp
+class Solution
+{
+    public:
+    
+    //Function to find the length of the longest common subsequence in two strings.
+    int func(string &s1, string &s2, int &n, int &m, int i, int j,vector<vector<int>> &memo){
+        if(i==n || j==m){
+            return 0;
+        }
+        if(memo[i][j]!=-1){
+            return memo[i][j];
+        }
+        if(s1[i]==s2[j]){
+                return memo[i][j]=1+func(s1,s2,n,m,i+1,j+1,memo);
+        }
+        return memo[i][j]=max(func(s1,s2,n,m,i+1,j,memo),func(s1,s2,n,m,i,j+1,memo));
+    }
+    
+    int lcs(int n, int m, string s1, string s2)
+    {
+        // your code here
+        vector<vector<int>> memo(n+1,vector<int> (m+1,-1));
+        return func(s1,s2,n,m,0,0,memo);
+    }
+};
+```
+```cpp
+class Solution
+{
+    public:
+    int lcs(int n, int m, string s1, string s2)
+    {
+        // your code here
+        vector<vector<int>> dp(n+1,vector<int> (m+1,0));
+        dp[0][0]=0;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+                if(s1[i-1]==s2[j-1]){
+                    dp[i][j]=1+dp[i-1][j-1];
+                }
+                else dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+            }
+        }
+        return dp[n][m];
+    }
+};
+```
