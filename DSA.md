@@ -553,7 +553,7 @@ Node* getMiddle(Node *head)
 }
 ```
 
-## 15. Flatten a Binary tree to Linked list
+## 15. Flatten a Binary tree to Linked list (preorder)
 
 ```cpp
 /**
@@ -606,4 +606,237 @@ public:
 };
 ```
 
-## 16. 
+## 16. Binary tree-> doubly linked list (inorder)
+
+```cpp
+class Solution
+{
+    public: 
+    //Function to convert binary tree to doubly linked list and return it.
+    
+    pair<Node*,Node*> convert(Node* root){
+        if(root==NULL)
+            return {root,root};
+        if(!root->left && !root->right) 
+            return {root,root};
+        
+        Node* head=root;
+        Node* tail=root;
+        
+        pair<Node*,Node*> leftList=convert(root->left);
+        pair<Node*,Node*> rightList=convert(root->right);
+        
+        if(leftList.first){
+            leftList.second->right=head;
+            head->left=leftList.second;
+            head=leftList.first;
+        }
+        if(rightList.first){
+            root->right=rightList.first;
+            rightList.first->left=root;
+            tail=rightList.second;
+        }
+        
+        return {head,tail};
+    }
+    
+    Node * bToDLL(Node *root)
+    {
+        if(root==NULL)
+            return root;
+        // your code here
+        pair<Node*,Node*> newRoot=convert(root);
+        return newRoot.first;
+    }
+};
+```
+
+#### simple recursion
+
+```cpp
+class Solution
+{
+    public: 
+    //Function to convert binary tree to doubly linked list and return it.
+    Node* prev=NULL;
+    Node * bToDLL(Node *root)
+    {
+        // your code here
+        if(root==NULL)
+            return root;
+        Node* head=bToDLL(root->left);
+        
+        if(prev==NULL){
+            head=root;
+        }
+        else{
+            root->left=prev;
+            prev->right=root;
+        }
+        prev=root;
+        bToDLL(root->right);
+        return head;
+    }
+};
+```
+
+## 17. Linked list has cycle?
+
+```cpp
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode *slow=head, *fast=head;
+        while(fast && fast->next){
+            fast=fast->next->next;
+            slow=slow->next;
+            if(fast==slow)
+                return true;
+        }
+        return false;
+    }
+};
+```
+
+## 18. Where does the cycle starts from in Linkedlist?
+
+```cpp
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(head==NULL || head->next==NULL)
+            return NULL;
+        ListNode *slow=head, *fast=head;
+
+        while(fast && fast->next){
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow==fast)
+                break;
+        }
+        if (!(fast && fast->next)) 
+            return NULL;
+
+        slow=head;
+        while(slow!=fast){
+            slow=slow->next;
+            fast=fast->next;
+        }
+        return fast;
+    }
+};
+```
+
+## 19. Find duplicate in an array of [1,n-1] (O(n),O(1) using slow and fast)
+
+```cpp
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int slow=0,fast=0;
+        do{
+            slow=nums[slow];
+            fast=nums[nums[fast]];
+        }while(slow!=fast);
+
+        slow=0;
+        while(slow!=fast){
+            slow=nums[slow];
+            fast=nums[fast];
+        }
+        return slow;
+    }
+};
+```
+
+## 20. Intersection point of two linked-list
+
+```cpp
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if(!headA || !headB) return NULL;
+        int n=0,m=0;
+        ListNode* temp=headA;
+        while(temp){
+            n++;
+            temp=temp->next;
+        }
+        ListNode* temp2=headB;
+        while(temp2){
+            m++;
+            temp2=temp2->next;
+        }
+
+        if(n>m){
+            while(n>m){
+                headA=headA->next;
+                n--;
+            }
+        }
+        else if(n<m){
+            while(n<m){
+                headB=headB->next;
+                m--;
+            }
+        }
+        while(headA && headB){
+            if(headA==headB)
+                return headA;
+            headA=headA->next;
+            headB=headB->next;
+        }
+        return NULL;
+
+    }
+};
+```
+
+## 21. Reverse linked list
+
+```cpp
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev=NULL;
+        while(head!=NULL){
+            ListNode* t=head->next;
+            head->next=prev;
+            prev=head;
+            head=t;
+        }
+        return prev;
+    }
+};
+```
+
+## 22. Palindrome linked list
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if(head == NULL || head->next == NULL){
+            return head;
+        }
+
+        ListNode* rhead=NULL;
+        ListNode* ptr=head;
+        while(ptr!=NULL){
+            ListNode* temp = new ListNode(ptr->val);
+            temp->next=rhead;
+            rhead=temp;
+            ptr=ptr->next;
+        }
+        while(rhead && head){
+            if(head->val!=rhead->val)
+                return false;
+            rhead=rhead->next;
+            head=head->next;
+        }
+        return true;
+    }
+};
+```
+
+## 22. 
