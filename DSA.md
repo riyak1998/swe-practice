@@ -839,4 +839,266 @@ public:
 };
 ```
 
-## 22. 
+## 23. balanced binary tree
+
+```cpp
+class Solution{
+    public:
+    //Function to check whether a binary tree is balanced or not.
+    pair<int,bool> solve(Node* root){
+        if(root==NULL)
+            return {0,true};
+        pair<int,bool> l=solve(root->left);
+        pair<int,bool> r=solve(root->right);
+        int d=abs(l.first-r.first);
+        if(l.second && r.second && (d==0 ||d==1)){
+            return {(max(l.first,r.first)+1),true};
+        }
+        return {(max(l.first,r.first)+1),false};
+    }
+    bool isBalanced(Node *root)
+    {
+        //  Your Code here
+        return solve(root).second;
+    }
+};
+```
+
+## 24. sorted LL to BST (vector extra space)
+
+```cpp
+class Solution{
+  public:
+    
+    
+    TNode* solve(vector<int> &v, int start, int end){
+        if(start>end)
+            return NULL;
+        int mid=start+(end-start)/2;
+        if((end-start)%2!=0)
+            mid=mid+1;
+        TNode* root=new TNode(v[mid]);
+        root->left=solve(v,start,mid-1);
+        root->right=solve(v,mid+1,end);
+        return root;
+    }
+    
+    TNode* sortedListToBST(LNode *head) {
+        //code here
+        vector<int> v;
+        while(head){
+            v.push_back(head->data);
+            head=head->next;
+        }
+        TNode* root=solve(v,0,v.size()-1);
+        return root;
+    }
+};
+```
+
+## 25. sorted LL to BST(no space)
+
+```cpp
+class Solution{
+  public:
+    
+    
+    TNode* solve(LNode **node_ref,int n){
+        if(n<=0)
+            return NULL;
+        TNode* l=solve(node_ref,n/2);
+        TNode* root=new TNode((*node_ref)->data);
+        root->left=l;
+        (*node_ref)=(*node_ref)->next;
+        root->right=solve(node_ref,(n-n/2-1));
+        return root;
+    }
+    
+    TNode* sortedListToBST(LNode *root) {
+        //code here
+        int n=0;
+        LNode* head=root;
+        while(head){
+            n++;
+            head=head->next;
+        }
+        
+        TNode* rooth=solve(&root,n);
+        return rooth;
+    }
+};
+```
+
+## 26. Diameter of a BT
+
+```cpp
+class Solution {
+  public:
+    // Function to return the diameter of a Binary Tree.
+    pair<int,int> diameterFast(Node* root){
+        if(root==NULL){
+            return {0,0};
+        }
+        
+        pair<int,int> left=diameterFast(root->left);
+        pair<int,int> right=diameterFast(root->right);
+        
+        int op1=left.first;
+        int op2=right.first;
+        //including the root
+        int op3=left.second+right.second+1;
+        
+        pair<int,int>ans;
+        //max diameter
+        ans.first=max(op1,max(op2,op3));
+        //max height for the current subtree
+        ans.second=max(left.second,right.second)+1;
+        return ans;
+    }
+    int diameter(Node* root) {
+        // Your code here
+        return diameterFast(root).first;
+    }
+};
+```
+
+## 27. Check if BST
+
+```cpp
+bool validate(Node*root,int min,int max){
+        if(root==NULL){
+            return true ;
+        }
+        if(root->data>min && root->data<max){
+            bool left=validate(root->left,min,root->data);
+            bool right=validate(root->right,root->data,max);
+        return(left && right);
+    }
+    else{
+        return false;
+    }
+ }
+    
+    bool isBST(Node* root) 
+    {
+      return validate(root,INT_MIN,INT_MAX)  ;
+}
+```
+
+## 28. Kth largest element in BST (reverse inorder)
+
+```cpp
+class Solution
+{
+    public:
+    int solve(Node* root, int &k){
+        if(root==NULL)
+            return INT_MIN;
+        int r=solve(root->right,k);
+        if(k==0)
+            return r;
+        k-=1;
+        if(k==0)
+            return root->data;
+        return solve(root->left,k);
+    }
+    int kthLargest(Node *root, int k)
+    {
+        //Your code here
+        if(root==NULL)
+            return INT_MIN;
+        return solve(root,k);
+    }
+};
+```
+
+## 29. Inorder successor
+
+```cpp
+class Solution{
+  public:
+    // returns the inorder successor of the Node x in BST (rooted at 'root')
+    Node * inOrderSuccessor(Node *root, Node *x)
+    {
+        //Your code here
+        Node* suc=new Node(INT_MIN);
+        if(root == NULL)
+            return suc;
+        Node* curr= root;
+        while(curr != NULL){
+            if(curr->data > x->data){
+                suc = curr;
+                curr= curr->left;
+            }else{
+                if(curr->right==NULL && suc->data<x->data)
+                    return NULL;
+                curr= curr->right;
+                
+            }
+        }
+        return suc;
+    }
+};
+```
+
+## 30. LCA
+
+```cpp
+class Solution
+{
+    public:
+    //Function to return the lowest common ancestor in a Binary Tree.
+    Node* lca(Node* root ,int p ,int q )
+    {
+       if(!root) return NULL;
+        if(root->data == p || root->data == q) return root;
+
+        Node* lst = lca(root->left, p, q);
+        Node* rst = lca(root->right, p, q);
+        if(!lst) return rst; 
+        if(!rst) return lst; 
+
+        return root;
+    }
+};
+```
+
+## 31. postfix-prefix stack
+
+```cpp
+bool isOperand(char c)  
+{  
+    if((c>='a' && c<='z') || (c>='A' && c<='Z'))  
+    {  
+        return true;  
+    }  
+    else  
+    {  
+        return false;  
+    }  
+}  
+// Converting postfix to prefix expression in C++  
+string postfixtoprefix(string postfix)  
+{  
+    stack<string> st;
+    string ex="";
+    for(int i=0;i<postfix.length();i++){
+        if(isOperand(postfix[i])){
+            string op(1, postfix[i]);
+            st.push(op);
+        }
+        else{
+            string o2=st.top();
+            st.pop();
+            string o1=st.top();
+            st.pop();
+            ex=postfix[i]+o1+o2;
+            st.push(ex);
+            ex.clear();
+        }
+    }
+    return st.top();
+}
+```
+
+
