@@ -432,3 +432,104 @@ public:
     }
 };
 ```
+
+## 13. LRU cache (dll+map)
+
+```cpp
+class LRUCache {
+public:
+    // dll class
+    class Node{
+        public:
+            int key;
+            int value;
+            Node* prev;
+            Node* next;
+            Node(int key, int value){
+                this->key=key;
+                this->value=value;
+                this->prev=NULL;
+                this->next=NULL;
+            }
+    };
+
+
+    Node* head= new Node(-1,-1);
+    Node* tail= new Node(-1,-1);
+
+    unordered_map<int,Node*> mp;
+    int cap;
+
+    LRUCache(int capacity) {
+        cap=capacity;
+        head->next=tail;
+        tail->prev=head;
+    }
+
+    void deleteNode(Node* pos){
+        Node* prevPos=pos->prev;
+        Node* nextPos=pos->next;
+        prevPos->next=nextPos;
+        nextPos->prev=prevPos;
+    }
+
+    void addNode(Node* pos){
+        Node* temp=head->next;
+
+        pos->next=temp;
+        pos->prev=head;
+
+        head->next=pos;
+        temp->prev=pos;
+    }
+    
+    int get(int key) {
+        if(mp.find(key)!=mp.end()){
+
+            //1. get the key->value(node->value), and erase from the map
+            //2. erase the node from the dll
+            //3. add the node in the front of dll
+            //4. update the map of key with new position of the node
+
+            Node* pos=mp[key];
+            int ans= pos->value;
+            mp.erase(key);
+            deleteNode(pos);
+            addNode(pos);
+            mp.insert({key,head->next});
+            return ans;
+        }
+        else return -1;
+    }
+    
+    void put(int key, int value) {
+        //0. if key already present in map, delete from map, insert the node in the first position of dll, add again in map with new node pointer
+        //1. if capacity is full, then delete the last node from the dll and the map
+        //2. add new node in the front of dll
+        //3. add the key and node posiion in the map
+
+        if(mp.find(key)!=mp.end()){
+            Node* pos=mp[key];
+            mp.erase(key);
+            deleteNode(pos);
+        }
+        else{
+            if(mp.size()==cap){
+                Node* lastNode=tail->prev;
+                mp.erase(lastNode->key);
+                deleteNode(lastNode);
+            }
+        }
+        addNode(new Node(key,value));
+        mp.insert({key,head->next});
+    }
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
+```
+
