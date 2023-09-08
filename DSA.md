@@ -533,3 +533,77 @@ public:
  */
 ```
 
+## 14. Mid of linked list
+
+```cpp
+Node* getMiddle(Node *head)
+{
+     struct Node *slow = head;
+     struct Node *fast = head;
+ 
+     if (head)
+     {
+         while (fast != NULL && fast->next != NULL)
+         {
+             fast = fast->next->next;
+             slow = slow->next;
+         }
+     }
+     return slow;
+}
+```
+
+## 15. Flatten a Binary tree to Linked list
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+
+    pair<TreeNode*,TreeNode*> convert(TreeNode* root){
+        if(root==NULL)
+            return {root,root};
+
+
+        TreeNode* head = root; 
+        TreeNode* tail = root;
+
+
+        pair<TreeNode*, TreeNode*> leftList=convert(root->left);
+        pair<TreeNode*, TreeNode*> rightList=convert(root->right);
+
+        //if left subtree and respective linked list exist
+        if(leftList.second){
+            leftList.second->right=rightList.first;
+            head->right=leftList.first;
+            tail=leftList.second;
+        }
+
+        head->left=NULL;
+
+        if(rightList.first){
+            tail=rightList.second;
+        }
+
+        return {head,tail};
+    }
+    void flatten(TreeNode* root) {
+        if(root==NULL)
+            return;
+        convert(root);
+        return;
+    }
+};
+```
+
+## 16. 
